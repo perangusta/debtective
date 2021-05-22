@@ -1,12 +1,22 @@
-source 'https://rubygems.org'
+# frozen_string_literal: true
+
+source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-# Specify your gem's dependencies in debtective.gemspec.
 gemspec
 
 group :development do
-  gem 'sqlite3'
+  gem "rake"
+  gem "rubocop"
+  gem "sqlite3"
+  gem "warning"
+  gem "yard"
 end
 
-# To use a debugger
-# gem 'byebug', group: [:development, :test]
+group :test do
+  gem "simplecov", require: false
+end
+
+group :development, :test do
+  gem "pry"
+end
