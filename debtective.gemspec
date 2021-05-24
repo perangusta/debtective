@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.metadata["source_code_uri"] = "https://github.com/perangusta/debtective"
   spec.metadata["changelog_uri"]   = "https://github.com/perangusta/debtective/CHANGELOG.md"
 
-  spec.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
+  spec.files = Dir["lib/**/*.rb", "lib/tasks/**/*.rake", "MIT-LICENSE", "Rakefile", "README.md"]
 
   spec.add_dependency "rails", "~> 6.1.3", ">= 6.1.3.2"
 end
