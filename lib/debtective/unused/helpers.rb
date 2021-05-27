@@ -5,22 +5,19 @@ require "debtective/unused/base"
 module Debtective
   module Unused
     class Helpers < Base
-      private
+      DEF_DIRECTORIES = %w[app/helpers].freeze
+      DEF_EXTENSIONS  = %w[rb].freeze
+      USE_DIRECTORIES = %w[app/helpers app/controllers app/views].freeze
+      USE_EXTENSIONS  = %w[rb js erb].freeze
 
-      # can the given filename contain target
-      def can_contain?(filename)
-        filename.start_with? "app/helpers"
-      end
+      DEF_BEFORE = /(^|\s)def\s/.freeze
+      DEF_HELPER = /(\w+)(\?|!)?/.freeze
+      DEF_AFTER  = /(\(.*\))?(;\send)?(\s|$)/.freeze
+      DEF_REGEX  = /#{DEF_BEFORE}(?<definition>#{DEF_HELPER})#{DEF_AFTER}/.freeze
 
-      # find target definition in the given code line or return nil
-      def find_def(line)
-        line.match(/(^|\s)def\s(\w+)(\?|!)?(\(.*\))?$/)&.[](2)
-      end
-
-      # regex to find each target occurrences (calls and definition itself)
-      def use_regex(helper)
-        /(?!(\w|-|\.))*#{helper}(?!(\w|-))*/
-      end
+      USE_BEFORE = /(?<!def\s|\w)/.freeze
+      USE_AFTER  = /(?!\w)/.freeze
+      USE_REGEX = ->(element) { /#{USE_BEFORE}#{element}#{USE_AFTER}/ }
     end
   end
 end

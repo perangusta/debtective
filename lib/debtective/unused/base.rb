@@ -2,92 +2,79 @@
 
 module Debtective
   module Unused
+    # Base service to find unused elements
     class Base
-      DIRECTORIES = %w[app lib].freeze
-      EXTENSIONS  = %w[rb js erb].freeze
+      # directories in which the element can be defined
+      DEF_DIRECTORIES = %w[app lib].freeze
+      # extensions in which the element can be defined
+      DEF_EXTENSIONS  = %w[rb].freeze
+      # directories in which the element can be used
+      USE_DIRECTORIES = %w[app lib].freeze
+      # extensions in which the element can be used
+      USE_EXTENSIONS  = %w[rb js erb].freeze
 
-      def investigate
-        element_counts
-      end
+      # pattern of the element definition
+      DEF_REGEX = //.freeze
+      # pattern of the element use
+      USE_REGEX = ->(_element) { // }
 
-      private
-
-      # can the given filename contain target
-      def can_contain?(_filename)
-        raise "should be implemented by inherited class"
-      end
-
-      # find target definition in the given code line or return nil
-      def find_def(_line)
-        raise "should be implemented by inherited class"
-      end
-
-      # regex to find each target occurrences (calls and definition itself)
-      def use_regex(_string)
-        raise "should be implemented by inherited class"
-      end
-
-      # paths where target could be called
-      def paths
-        DIRECTORIES.product(EXTENSIONS).map { |pair| "#{pair[0]}/**/*.#{pair[1]}" }
-      end
-
-      # files matching these paths
-      def source_files
-        Dir.glob(paths, base: Rails.root).map { |filename| [filename, File.readlines(Rails.root + filename)] }.to_h
-      end
-
-      # list of targets in the codebase
-      def elements
-        source_files.flat_map do |filename, lines|
-          next unless can_contain?(filename)
-
+      # returns elements with uses count
+      # @return [Array]
+      # @example [{ position: "app/helpers/aaplication_helper:42", name: "my_helper", count: 3 }, ...]
+      def call
+        # use cache to handle cases where the same element is defined in different classes/modules
+        # (since we cannot know which one is called, we count 1 for each of them)
+        @cache = {}
+        paths = file_paths(self.class::DEF_DIRECTORIES, self.class::DEF_EXTENSIONS)
+        Dir.glob(paths, base: Rails.root).flat_map do |filename|
+          lines = File.readlines(Rails.root + filename)
           lines.map.with_index do |line, index|
-            match = find_def(line)
-            # [name, position]
-            # e.g. [human_readable_date, app/helpers/dates_helper:42]
-            [match, "#{filename}:#{index + 1}"] if match
+            line_data(filename, line, index)
           end
         end.compact
       end
 
-      # whole codebase in a single string
-      def source_code
-        source_files.values.flatten.join(" ")
-      end
+      private
 
-      # group targets by name and count occurrences
-      # e.g. { name: 3, human_readable_date: 1 }
-      def count_by_name
-        elements.map(&:first).group_by(&:itself).transform_values(&:count)
-      end
+      # returns line data if there is a definition
+      # @param filename [String] "app/helpers/aaplication_helper"
+      # @param line [String] "  def method_a\n"
+      # @param index [Integer] current line in the filename
+      # @return [Hash, nil]
+      # @example { position: "app/helpers/aaplication_helper:42", name: "my_helper", count: 3 }
+      def line_data(filename, line, index)
+        definition = line.match(self.class::DEF_REGEX)&.[](:definition)
+        return unless definition
 
-      # message to print
-      def message
-        "Scanning #{source_files.size} files for #{elements.size} #{target}..."
-      end
-
-      # iterate over all the targets and count when helper is called
-      # note we cannot be sure that this is indeed this target that is called because we only check for name without module
-      # save missing targets to avoid looking several time for the same target name defined in different classes
-      def element_counts
-        @checked = {}
-        elements.map do |element|
-          [element[0], element_count(element)]
+        unless @cache[definition]
+          # use regex escape to handle element with special characters like "?" or "!"
+          regex = self.class::USE_REGEX[Regexp.escape(definition)]
+          @cache[definition] = source_code.scan(regex).count
         end
+
+        { position: "#{filename}:#{index + 1}", name: definition, count: @cache[definition] }
       end
 
-      def element_count(element)
-        # find cached count
-        cached_count = @checked[element[0]]
-        # set count to cached one
-        return cached_count if cached_count
+      # returns whole code in a single string
+      # @return [String]
+      # @example "module ApplicationHelper\n\n ... </html>\n\n \n <%= yield %>\n"
+      def source_code
+        @source_code ||=
+          begin
+            paths = file_paths(self.class::USE_DIRECTORIES, self.class::USE_EXTENSIONS)
+            Dir.glob(paths, base: Rails.root).map do |filename|
+              File.readlines(Rails.root + filename)
+            end.join("\n \n ")
+          end
+      end
 
-        # remove from count because it includes the target definition itself (eventually multiple times)
-        regex = use_regex(Regexp.escape(element[0]))
-        scan = source_code.scan(regex)
-        # cache and return count
-        @checked[element[0]] = scan.count - count_by_name[element[0]]
+      # returns file paths matching directories and extensions
+      # @return [Array<String>]
+      # @param directories [Array<String>] ["app" "lib"]
+      # @param extensions [Array<String>] ["rb" "js"]
+      # @example ["app/helpers/**/*.rb", ..., "app/views/**/*.erb"]
+      def file_paths(directories, extensions)
+        directories.product(extensions).map { |pair| "#{pair[0]}/**/*.#{pair[1]}" }
       end
     end
   end
