@@ -8,28 +8,21 @@ module Debtective
     class HelpersTest < Minitest::Test
       def test_def_regex
         [
-          "def hello_world",
-          "  def hello_world  ",
-          "def hello_world # comment",
-          "def hello_world()",
-          "def hello_world(a, b)",
-          "def hello_world(a: \"hello world\")",
-          "def hello_world(a: \"(hello) (world)\")",
-          "def hello_world; end"
+          ["def hello_world", "hello_world"],
+          ["  def hello_world  ", "hello_world"],
+          ["def hello_world # comment", "hello_world"],
+          ["def hello_world()", "hello_world"],
+          ["def hello_world(a, b)", "hello_world"],
+          ["def hello_world(a: \"hello world\")", "hello_world"],
+          ["def hello_world(a: \"(hello) (world)\")", "hello_world"],
+          ["def hello_world; end", "hello_world"],
+          ["def hello_world!(a, b)", "hello_world!"],
+          ["def hello_world?(a, b)", "hello_world?"]
+
         ].each do |line|
-          helper = line.match(Debtective::Unused::Helpers::DEF_REGEX)&.[](:definition)
-          assert_equal "hello_world", helper
+          helper = line[0].match(Debtective::Unused::Helpers::DEF_REGEX)&.[](:definition)
+          assert_equal line[1], helper
         end
-      end
-
-      def test_def_regex_with_!
-        helper = "def hello_world!(a, b)".match(Debtective::Unused::Helpers::DEF_REGEX)&.[](:definition)
-        assert_equal "hello_world!", helper
-      end
-
-      def test_def_regex_with_?
-        helper = "def hello_world?(a, b)".match(Debtective::Unused::Helpers::DEF_REGEX)&.[](:definition)
-        assert_equal "hello_world?", helper
       end
 
       def test_use_regex
@@ -50,6 +43,7 @@ module Debtective
       def test_use_regex_no_match
         regex = Debtective::Unused::Helpers::USE_REGEX["example"]
         [
+          "EXAMPLE",
           "_example",
           "example_",
           "def example",
@@ -63,10 +57,14 @@ module Debtective
       def test_service
         elements = Debtective::Unused::Helpers.new.call
 
-        assert_includes elements, { position: "app/helpers/application_helper.rb:4", name: "used_0_time", count: 0 }
-        assert_includes elements, { position: "app/helpers/application_helper.rb:8", name: "used_1_time", count: 1 }
-        assert_includes elements, { position: "app/helpers/application_helper.rb:12", name: "used_2_times", count: 2 }
-        assert_includes elements, { position: "app/helpers/example_helper.rb:6", name: "example_1_time", count: 1 }
+        [
+          { filename: "app/helpers/application_helper.rb", line: 8, name: "unused_helper", count: 0 },
+          { filename: "app/helpers/application_helper.rb", line: 14, name: "helper_used_once", count: 1 },
+          { filename: "app/helpers/application_helper.rb", line: 18, name: "helper_used_twice", count: 2 },
+          { filename: "app/helpers/users_helper.rb", line: 6, name: "users_helper_used_once", count: 1 }
+        ].each do |expectation|
+          assert_includes elements, expectation
+        end
       end
     end
   end

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-module ExampleHelper
+module UsersHelper
   module_function
 
-  def example_1_time
-    # ...
+  def users_helper_used_once
+    1 + 1
   end
 end

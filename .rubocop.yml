@@ -1,5 +1,7 @@
 AllCops:
   NewCops: enable
+  Exclude:
+    - 'db/schema.rb'
 
 Style/StringLiterals:
   Enabled: true
@@ -67,12 +69,16 @@ Style/Documentation:
   Enabled: true
   Exclude:
     - 'test/**/*'
+    - 'db/migrate/*'
 
 # TODO: enable when ready to document!
 # Checks for missing documentation comment for public methods.
 Style/DocumentationMethod:
   Enabled: true
   RequireForNonPublicMethods: true
+  Exclude:
+    - 'test/**/*'
+    - 'db/migrate/*'
 
 # Avoid multi-line method signatures.
 Style/MultilineMethodSignature:

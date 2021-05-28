@@ -27,32 +27,32 @@ module Debtective
         @cache = {}
         paths = file_paths(self.class::DEF_DIRECTORIES, self.class::DEF_EXTENSIONS)
         Dir.glob(paths, base: Rails.root).flat_map do |filename|
-          lines = File.readlines(Rails.root + filename)
-          lines.map.with_index do |line, index|
-            line_data(filename, line, index)
-          end
+          process_file(filename)
         end.compact
       end
 
       private
 
-      # returns line data if there is a definition
-      # @param filename [String] "app/helpers/aaplication_helper"
-      # @param line [String] "  def method_a\n"
-      # @param index [Integer] current line in the filename
-      # @return [Hash, nil]
-      # @example { position: "app/helpers/aaplication_helper:42", name: "my_helper", count: 3 }
-      def line_data(filename, line, index)
-        definition = line.match(self.class::DEF_REGEX)&.[](:definition)
-        return unless definition
+      # returns elements find in filename
+      # @return [Array]
+      # @example [{ position: "app/helpers/aaplication_helper:42", name: "my_helper", count: 3 }, ...]
+      def process_file(filename)
+        lines = File.readlines(Rails.root + filename)
+        lines.map.with_index do |line, index|
+          next unless (definition = line.match(self.class::DEF_REGEX)&.[](:definition))
 
-        unless @cache[definition]
-          # use regex escape to handle element with special characters like "?" or "!"
-          regex = self.class::USE_REGEX[Regexp.escape(definition)]
-          @cache[definition] = source_code.scan(regex).count
+          count = (@cache[definition] ||= definition_count(definition))
+          { filename: filename, line: index + 1, name: definition, count: count }
         end
+      end
 
-        { position: "#{filename}:#{index + 1}", name: definition, count: @cache[definition] }
+      # returns count of uses for the given definition
+      # @param definition [String] "my_method"
+      # @return [Integer]
+      def definition_count(definition)
+        # use regex escape to handle element with special characters like "?" or "!"
+        regex = self.class::USE_REGEX[Regexp.escape(definition)]
+        source_code.scan(regex).count
       end
 
       # returns whole code in a single string

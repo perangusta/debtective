@@ -13,9 +13,9 @@
     <%= yield %>
 
     <% 
-      used_1_time
-      used_2_times
-      used_2_times
+      helper_used_once(1, 2)
+      helper_used_twice(x: 1)
+      helper_used_twice(x: 2)
     %>
   </body>
 </html>

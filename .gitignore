@@ -3,10 +3,15 @@
 /log/*.log
 /pkg/
 /tmp/
+
+# test
 /test/dummy/log/*.log
 /test/dummy/storage/
 /test/dummy/tmp/
 /test/dummy/debtective/
+/test/dummy/db/development.sqlite3
+/test/dummy/db/test.sqlite3
+
 .byebug_history
 
 # builds

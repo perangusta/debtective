@@ -4,12 +4,12 @@ require "debtective/unused/base"
 
 module Debtective
   module Unused
-    class Helpers < Base
+    class Constants < Base
       DEF_DIRECTORIES = %w[app/helpers].freeze
       USE_DIRECTORIES = %w[app/helpers app/controllers app/views].freeze
 
-      DEF_REGEX  = /(?:^|\s)def\s(?<definition>(?:\w+)(?:\?|!)?)(?:\(.*\))?(?:;\send)?(?:\s|$)/.freeze
-      USE_REGEX  = ->(element) { /(?<!def\s|\w)#{element}(?!\w)/ }
+      DEF_REGEX  = /(?<definition>[A-Z](?:[A-Z]|\d|_)+)(?:\s=)/.freeze
+      USE_REGEX  = ->(element) { /(?!\w)*#{element}(?!\w|\s=)/ }
     end
   end
 end
