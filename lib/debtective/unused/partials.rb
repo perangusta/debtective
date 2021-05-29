@@ -4,6 +4,7 @@ require "debtective/unused/base"
 
 module Debtective
   module Unused
+    # Inspect partials usage
     class Partials < Base
       DEF_DIRECTORIES = %w[app/views].freeze
       DEF_EXTENSIONS  = %w[html.erb].freeze

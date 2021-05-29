@@ -4,6 +4,7 @@ require "debtective/unused/base"
 
 module Debtective
   module Unused
+    # Inspect constants usage
     class Constants < Base
       DEF_DIRECTORIES = %w[app/helpers].freeze
       USE_DIRECTORIES = %w[app/helpers app/controllers app/views].freeze
