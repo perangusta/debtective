@@ -20,7 +20,7 @@ module Debtective
           ["def hello_world?(a, b)", "hello_world?"]
 
         ].each do |line|
-          helper = line[0].match(Debtective::Unused::Helpers::DEF_REGEX)&.[](:definition)
+          helper = line[0].match(Debtective::Unused::Helpers::DEF_REGEX)&.[](:def)
           assert_equal line[1], helper
         end
       end
@@ -58,10 +58,10 @@ module Debtective
         elements = Debtective::Unused::Helpers.new.call
 
         [
-          { filename: "app/helpers/application_helper.rb", line: 8, name: "unused_helper", count: 0 },
-          { filename: "app/helpers/application_helper.rb", line: 14, name: "helper_used_once", count: 1 },
-          { filename: "app/helpers/application_helper.rb", line: 18, name: "helper_used_twice", count: 2 },
-          { filename: "app/helpers/users_helper.rb", line: 6, name: "users_helper_used_once", count: 1 }
+          { file_path: "app/helpers/application_helper.rb", line: 8, name: "unused_helper", count: 0 },
+          { file_path: "app/helpers/application_helper.rb", line: 14, name: "helper_used_once", count: 1 },
+          { file_path: "app/helpers/application_helper.rb", line: 18, name: "helper_used_twice", count: 2 },
+          { file_path: "app/helpers/users_helper.rb", line: 6, name: "users_helper_used_once", count: 1 }
         ].each do |expectation|
           assert_includes elements, expectation
         end

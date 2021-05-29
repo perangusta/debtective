@@ -14,7 +14,7 @@ module Debtective
           ["CONST_X = 42", "CONST_X"],
           ["CONST_42 = 42", "CONST_42"]
         ].each do |line|
-          constant = line[0].match(Debtective::Unused::Constants::DEF_REGEX)&.[](:definition)
+          constant = line[0].match(Debtective::Unused::Constants::DEF_REGEX)&.[](:def)
           assert_equal line[1], constant
         end
       end
@@ -49,9 +49,9 @@ module Debtective
         elements = Debtective::Unused::Constants.new.call
 
         [
-          { filename: "app/helpers/application_helper.rb", line: 4, name: "UNUSED_CONST", count: 0 },
-          { filename: "app/helpers/application_helper.rb", line: 5, name: "CONST_USED_ONCE", count: 1 },
-          { filename: "app/helpers/application_helper.rb", line: 6, name: "CONST_LAMBDA", count: 2 }
+          { file_path: "app/helpers/application_helper.rb", line: 4, name: "UNUSED_CONST", count: 0 },
+          { file_path: "app/helpers/application_helper.rb", line: 5, name: "CONST_USED_ONCE", count: 1 },
+          { file_path: "app/helpers/application_helper.rb", line: 6, name: "CONST_LAMBDA", count: 2 }
         ].each do |expectation|
           assert_includes elements, expectation
         end
