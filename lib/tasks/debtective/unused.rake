@@ -3,7 +3,7 @@
 require "csv"
 
 namespace :debtective do
-  desc "Find unused helpers and constants"
+  desc "Find unused elements"
   task :unused do
     targets = {
       helpers: ["file_path", "line", "name", "count"],

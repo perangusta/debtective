@@ -17,6 +17,12 @@ Metrics/BlockLength:
 
 Metrics/MethodLength:
   Max: 15
+  Exclude:
+    - test/**/*
+
+Metrics/AbcSize:
+  Exclude:
+    - test/**/*
 
 Layout/LineLength:
   Max: 120

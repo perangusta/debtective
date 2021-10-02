@@ -6,7 +6,7 @@ module Debtective
   module Unused
     # Inspect constants usage
     class Constants < Base
-      DEF_DIRECTORIES = %w[app/helpers].freeze
+      DEF_DIRECTORIES = %w[app].freeze
       USE_DIRECTORIES = %w[app/helpers app/controllers app/views].freeze
 
       DEF_REGEX  = /(?<def>[A-Z](?:[A-Z]|\d|_)+)(?:\s=)/.freeze

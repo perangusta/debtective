@@ -1,28 +1,41 @@
 # Debtective
-Short description and motivation.
+
+Help find out debt in your application.
 
 ## Usage
-How to use my plugin.
+
+Run dedicated tasks:
+
+- `bundle exec rake debtective:unused`: list unused helpers, constants and partials.
+
+More tasks to come!
 
 ## Installation
+
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'debtective'
+group :development do
+  gem 'debtective'
+end
 ```
 
 And then execute:
+
 ```bash
 $ bundle
 ```
 
 Or install it yourself as:
+
 ```bash
 $ gem install debtective
 ```
 
 ## Contributing
-Contribution directions go here.
+
+This gem is still a work in progress. You can use GitHub issue to start a discussion.
 
 ## License
+
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).

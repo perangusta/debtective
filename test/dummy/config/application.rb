@@ -11,7 +11,7 @@ require "debtective"
 
 module Dummy
   class Application < Rails::Application
-    config.load_defaults 6.1
+    config.load_defaults 5.2
 
     # Configuration for the application, engines, and railties goes here.
     #

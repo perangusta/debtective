@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
-require "debtective/railtie" if defined?(Rails)
-
 require "debtective/version"
 require "debtective/engine"
+require "debtective/railtie" if defined?(Rails)
 
 # Entrypoint
 module Debtective
-  # Your code goes here...
+  # TODO: configuration
 end
