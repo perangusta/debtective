@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# $LOAD_PATH.push File.expand_path("lib", __dir__)
+$LOAD_PATH.push File.expand_path("lib", __dir__)
 require_relative "lib/debtective/version"
 
 Gem::Specification.new do |spec|
@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.metadata["source_code_uri"] = "https://github.com/perangusta/debtective"
   spec.metadata["changelog_uri"]   = "https://github.com/perangusta/debtective/CHANGELOG.md"
 
-  spec.files = Dir["lib/**/*.rb", "tasks/**/*.rake", "MIT-LICENSE", "Rakefile", "README.md"]
+  spec.files = Dir["lib/**/*.rb", "lib/tasks/**/*.rake", "MIT-LICENSE", "Rakefile", "README.md"]
 
   spec.add_dependency "rails", "~> 5.2"
 end
