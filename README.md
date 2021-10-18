@@ -7,6 +7,8 @@ Help find out debt in your application.
 Run dedicated tasks:
 
 - `bundle exec rake debtective:unused`: list unused helpers, constants and partials.
+- `bundle exec rake debtective:absolute_paths:partials`: find absolute paths for partials.
+- - `bundle exec rake debtective:absolute_paths:locales`: find absolute paths for locales.
 
 More tasks to come!
 
