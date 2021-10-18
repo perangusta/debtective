@@ -1,2 +1,18 @@
 <%= render partial: "partial_used_once" %> <!-- not counted -->
 <%= render partial: "users/partial_used_twice" %>
+
+<!-- test/lib/debtective/absolute_paths/correcter/locales_test.rb -->
+<%= t("absolute.path") %>
+<%= t(".relative_path") %>
+<%= t(".relative.path") %>
+<%= t("missing.path") %>
+<%= t("incomplete.path") %>
+<%= t("key.#{42 + 1}.inter#{pola}tion") %>
+
+<!-- test/lib/debtective/absolute_paths/correcter/partials_test.rb -->
+<%= render "tasks/relative/path" %>
+<%= render "relative_path" %>
+<%= render "relative/path" %>
+<%= render "in/application" %>
+<%= render "missing" %>
+<%= render "tasks/#{42 + 1}/inter#{pola}tion" %>

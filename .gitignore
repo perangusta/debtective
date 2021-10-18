@@ -14,5 +14,12 @@
 
 .byebug_history
 
+# coverage
+coverage/*
+!coverage/.keep
+
 # builds
 debtective-*.gem
+
+# notes
+_notes/*

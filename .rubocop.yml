@@ -1,7 +1,8 @@
 AllCops:
   NewCops: enable
   Exclude:
-    - 'test/dummy/db/schema.rb'
+    - _notes/**/*
+    - test/dummy/db/schema.rb
 
 Style/StringLiterals:
   Enabled: true

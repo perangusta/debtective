@@ -34,7 +34,7 @@ module Debtective
       csv_path = Rails.root.join("debtective/partials.csv")
       assert File.exist?(csv_path)
       csv = CSV.read(csv_path)
-      assert_equal 4, csv.length
+      assert_equal 7, csv.length
       assert_equal ["file_path", "count"], csv[0]
       assert_equal ["app/views/users/_unused_partial.html.erb", "0"], csv[1]
     ensure

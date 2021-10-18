@@ -17,7 +17,6 @@ module Debtective
         partial = file_path.match(DEF_REGEX)
         return unless partial
 
-        puts partial
         { file_path: file_path, count: uses_count(partial) }
       end
 
