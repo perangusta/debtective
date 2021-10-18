@@ -7,6 +7,8 @@ namespace :debtective do
   namespace :absolute_paths do
     desc "Find locales absolute paths"
     task :locales do
+      I18n.load_path += Dir["#{Rails.root}/config/locales/**/*.yml"]
+
       options = { verbose: true }
       OptionParser.new do |opts|
         opts.banner = "Usage: rake debtective:absolute_paths:locales [options]"
